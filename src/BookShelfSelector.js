@@ -1,30 +1,28 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-class BookShelfSelector extends Component {
+function BookShelfSelector(props) {
+  const { currentShelf } = props;
 
-  handleSelectChange = event => {
+  const handleSelectChange = event => {
     const { value } = event.target;
 
-    this.props.updateToShelf(value);
+    props.updateToShelf(value);
   }
 
-  render() {
-    const { currentShelf } = this.props;
-
-    return (
-      <div className="book-shelf-changer">
-        <select onChange={this.handleSelectChange} value={currentShelf || 'none'}>
-          <option value="move" disabled>Move to...</option>
-          <option value="currentlyReading">Currently Reading</option>
-          <option value="wantToRead">Want to Read</option>
-          <option value="read">Read</option>
-          <option value="none">None</option>
-        </select>
-      </div>
-    );
-  }
+  return (
+    <div className="book-shelf-changer">
+      <select onChange={handleSelectChange} value={currentShelf || 'none'}>
+        <option value="move" disabled>Move to...</option>
+        <option value="currentlyReading">Currently Reading</option>
+        <option value="wantToRead">Want to Read</option>
+        <option value="read">Read</option>
+        <option value="none">None</option>
+      </select>
+    </div>
+  );
 }
+
 
 BookShelfSelector.propTypes = {
   currentShelf: PropTypes.string,

@@ -4,7 +4,6 @@ import BookShelfSelector from './BookShelfSelector';
 import * as BooksAPI from './BooksAPI';
 
 class Book extends Component {
-
   state = {
     bookId: '',
     coverUrl: '',
@@ -16,14 +15,18 @@ class Book extends Component {
   componentDidMount() {
     BooksAPI.get(this.props.bookId)
       .then(book => {
-        this.setState({
+        const newState = {
           bookId: book.id,
           shelf: book.shelf,
-          //TODO - handle when there is no imaglinks or thumnail
-          coverUrl: book.imageLinks.thumbnail,
           title: book.title,
           authors: book.authors
-        })
+        };
+
+        if (book.imageLinks && book.imageLinks.thumbnail) {
+          newState.coverUrl = book.imageLinks.thumbnail
+        }
+
+        this.setState(newState)
       })
       .catch(err => {
         console.error(`### Error when fetching book with id ${this.props.bookId}, Error:`, err);

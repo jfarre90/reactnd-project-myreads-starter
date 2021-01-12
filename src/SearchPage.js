@@ -6,16 +6,17 @@ import * as BooksAPI from './BooksAPI';
 
 class SearchPage extends Component {
   state = {
-    booksFound: []
+    booksFound: [],
+    emptyInput: true
   };
 
   searchMatchingBooks = queryText => {
     BooksAPI.search(queryText.trim().toLowerCase())
       .then(booksFound => {
         if (booksFound.error) {
-          this.setState({ booksFound: [] })
+          this.setState({ booksFound: [], emptyInput: false })
         } else {
-          this.setState({ booksFound });
+          this.setState({ booksFound, emptyInput: false });
         }
       })
       .catch(err => {
@@ -24,18 +25,22 @@ class SearchPage extends Component {
   }
 
   searchForBookMatchingText = queryText => {
-    this.searchMatchingBooks(queryText.trim().toLowerCase());
+    if (queryText.length > 0) {
+      this.searchMatchingBooks(queryText.trim().toLowerCase());
+    } else {
+      this.setState({ booksFound: [], emptyInput: true });
+    }
   }
 
 
   render() {
     const { updateBookToShelf } = this.props;
-    const { booksFound } = this.state;
+    const { booksFound, emptyInput } = this.state;
 
     return (
       <div className="search-books">
         <SearchInput searchBook={this.searchForBookMatchingText} />
-        <SearchResults books={booksFound} updateBookToShelf={updateBookToShelf} />
+        <SearchResults books={booksFound} updateBookToShelf={updateBookToShelf} emptyInput={emptyInput}/>
       </div>
     );
   }
