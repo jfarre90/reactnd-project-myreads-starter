@@ -6,6 +6,7 @@ import * as BooksAPI from './BooksAPI';
 class Book extends Component {
 
   state = {
+    bookId: '',
     coverUrl: '',
     title: '',
     authors: [],
@@ -16,6 +17,7 @@ class Book extends Component {
     BooksAPI.get(this.props.bookId)
       .then(book => {
         this.setState({
+          bookId: book.id,
           shelf: book.shelf,
           //TODO - handle when there is no imaglinks or thumnail
           coverUrl: book.imageLinks.thumbnail,
@@ -26,18 +28,13 @@ class Book extends Component {
       .catch(err => {
         console.error(`### Error when fetching book with id ${this.props.bookId}, Error:`, err);
       })
-
-
   }
 
   updateToShelf = newShelf => {
-    console.log('### new shelf', newShelf);
-
-    this.setState((currentState) => {
-      this.props.updateBookToShelf(this.props.bookId, newShelf, currentState.shelf);
-      return { shelf: newShelf }
-    })
+    this.setState({ shelf: newShelf });
+    this.props.updateBookToShelf(this.state.bookId, newShelf);
   }
+
 
   render() {
     const { coverUrl, title, authors, shelf } = this.state;
@@ -63,10 +60,6 @@ class Book extends Component {
 
 Book.propTypes = {
   bookId: PropTypes.string.isRequired,
-  // coverUrl: PropTypes.string.isRequired,
-  // title: PropTypes.string.isRequired,
-  // authors: PropTypes.array,
-  // shelf: PropTypes.string,
   updateBookToShelf: PropTypes.func.isRequired
 }
 

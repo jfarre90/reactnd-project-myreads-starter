@@ -5,11 +5,12 @@ import { Link } from 'react-router-dom';
 import { sentenceCase } from 'sentence-case';
 
 class DisplayPage extends Component {
-  render() {
-    const { shelves, updateBookToShelf } = this.props;
 
-    // get the different shelf titles
-    const bookShelves = Object.keys(shelves);
+  render() {
+    const { updateBookToShelf, shelves } = this.props;
+
+    // get the different shelf ids
+    const bookShelveIds = Object.keys(shelves);
 
     return (
       <div className="list-books">
@@ -18,16 +19,13 @@ class DisplayPage extends Component {
         </div>
 
         <div className="list-books-content">
-          {bookShelves.map(camelCaseShelfTitle => {
-
-            const shelfBooks = shelves[camelCaseShelfTitle];
-
+          {bookShelveIds.map(shelfId => {
             return (
-              <BookShelf key={camelCaseShelfTitle}
-                shelfId={camelCaseShelfTitle}
-                shelfTitle={sentenceCase(camelCaseShelfTitle)}
-                books={shelfBooks}
+              <BookShelf key={shelfId}
+                bookIds={shelves[shelfId]}
+                shelfTitle={sentenceCase(shelfId)}
                 updateBookToShelf={updateBookToShelf}
+                updateShelves={this.updateShelves}
               />
             );
           })}

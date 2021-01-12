@@ -9,20 +9,6 @@ class SearchPage extends Component {
     booksFound: []
   };
 
-  componentDidMount() {
-    this.fetchAllBooks();
-  }
-
-  fetchAllBooks = () => {
-    BooksAPI.getAll()
-      .then(allBooks => {
-        this.setState({ booksFound: allBooks });
-      })
-      .catch(err => {
-        console.error('### Error during getAll query. Error:', err);
-      });
-  }
-
   searchMatchingBooks = queryText => {
     BooksAPI.search(queryText.trim().toLowerCase())
       .then(booksFound => {
@@ -38,11 +24,7 @@ class SearchPage extends Component {
   }
 
   searchForBookMatchingText = queryText => {
-    if (queryText.length > 0) {
-      this.searchMatchingBooks(queryText.trim().toLowerCase());
-    } else {
-      this.fetchAllBooks();
-    }
+    this.searchMatchingBooks(queryText.trim().toLowerCase());
   }
 
 
@@ -53,15 +35,13 @@ class SearchPage extends Component {
     return (
       <div className="search-books">
         <SearchInput searchBook={this.searchForBookMatchingText} />
-        <SearchResults books={this.state.booksFound} updateBookToShelf={updateBookToShelf} />
+        <SearchResults books={booksFound} updateBookToShelf={updateBookToShelf} />
       </div>
     );
   }
-
 }
 
 SearchPage.propTypes = {
-  books: PropTypes.array.isRequired,
   updateBookToShelf: PropTypes.func.isRequired
 }
 
