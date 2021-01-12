@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 class SearchResults extends Component {
   render() {
-    const { books } = this.props;
+    const { books, updateBookToShelf } = this.props;
 
     return (
       <div>
@@ -12,12 +12,11 @@ class SearchResults extends Component {
           <ol className="books-grid">
             {books.length > 0 ? books.map(book => (
               <li key={book.id}>
-                <Book coverUrl={book.imageLinks.thumbnail} title={book.title} authors={book.authors} />
+                <Book bookId={book.id} updateBookToShelf={updateBookToShelf}/>
               </li>
             )) : (
                 <h1>No books found</h1>
               )
-
             }
           </ol>
         </div>
@@ -28,7 +27,8 @@ class SearchResults extends Component {
 }
 
 SearchResults.propTypes = {
-  books: PropTypes.array.isRequired
+  books: PropTypes.array.isRequired,
+  updateBookToShelf: PropTypes.func.isRequired,
 }
 
 export default SearchResults;

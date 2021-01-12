@@ -47,19 +47,22 @@ class SearchPage extends Component {
 
 
   render() {
+    const { updateBookToShelf } = this.props;
+    const { booksFound } = this.state;
+
     return (
       <div className="search-books">
         <SearchInput searchBook={this.searchForBookMatchingText} />
-        <SearchResults books={this.state.booksFound} />
+        <SearchResults books={this.state.booksFound} updateBookToShelf={updateBookToShelf} />
       </div>
     );
   }
 
 }
 
-// TODO: Define the required props
-// SearchPage.propTypes = {
-//     books: PropTypes.array.isRequired
-// }
+SearchPage.propTypes = {
+  books: PropTypes.array.isRequired,
+  updateBookToShelf: PropTypes.func.isRequired
+}
 
 export default SearchPage;

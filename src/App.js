@@ -1,19 +1,81 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-// import BookShelf from './BookShelf';
 import DisplayPage from './DisplayPage';
 import SearchPage from './SearchPage';
+import * as BooksAPI from './BooksAPI';
 import './App.css'
 
 class BooksApp extends Component {
+
+  /*
+    the shelves state will have the below format:
+      shelves: {
+        currentlyReading: [book1, book2, ...],
+        wantToRead: [...]
+      }
+  */
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    showSearchPage: false
+    shelves: {}
+  }
+
+
+  // getAvailableShelves = () => {
+  //   return ['currentlyReading', 'wantToRead', 'read'];
+  // }
+
+  initializeMyShelves = books => {
+    // I initialize the shelves this way in case that in the future we want to add more shelves.
+    const initializedShelves = {};
+
+    books.forEach(book => {
+      if (book.shelf) {
+        initializedShelves[book.shelf] = initializedShelves[book.shelf] ?
+          [...initializedShelves[book.shelf], book.id] :
+          [book.id];
+      }
+    });
+
+    this.setState({ shelves: initializedShelves });
+  };
+
+  fetchMyBooks = () => {
+    BooksAPI.getAll()
+      .then(myBooks => {
+        this.initializeMyShelves(myBooks);
+      })
+      .catch(err => {
+        console.error('### Error during getAll query. Error:', err);
+      });
+  }
+
+  componentDidMount() {
+    this.fetchMyBooks();
+  }
+
+  updateBookToShelf = (bookId, newShelf, previousShelf) => {
+    BooksAPI.update({ id: bookId }, newShelf)
+      .then(res => {
+        this.setState((currentState) => {
+          const currentShelves = currentState.shelves;
+
+          const newShelves = { ...currentShelves }
+
+          if (newShelf !== 'none') {
+            newShelves[newShelf]= [...currentShelves[newShelf], bookId];
+          }
+
+          if (previousShelf) {
+            newShelves[previousShelf] = currentShelves[previousShelf].filter(bookIdInShelf => bookIdInShelf !== bookId);
+          }
+
+          return {
+            shelves: newShelves
+          }
+        })
+      })
+      .catch(err => {
+        console.error('### Error during update query. Error:', err);
+      })
   }
 
   render() {
@@ -22,11 +84,11 @@ class BooksApp extends Component {
         <Switch>
 
           <Route path="/dashboard">
-            <DisplayPage />
+            <DisplayPage shelves={this.state.shelves} updateBookToShelf={this.updateBookToShelf} />
           </Route>
 
           <Route path="/search">
-            <SearchPage />
+            <SearchPage shelves={this.state.shelves} />
           </Route>
 
           <Route path="/*">

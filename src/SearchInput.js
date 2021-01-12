@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 class SearchInput extends Component {
@@ -14,7 +15,8 @@ class SearchInput extends Component {
     // clearing previous search timeout
     clearTimeout(this.inputTimer);
 
-    // setting new timeout after search text change, the query will be triggered if user does not write anything else in the next 500ms
+    /* setting new timeout after search text change, the query will be triggered
+    if user does not write anything else in the next 500ms */
     this.inputTimer = setTimeout(() => {
       this.props.searchBook(textSearch)
     }, 500);
@@ -31,7 +33,7 @@ class SearchInput extends Component {
   render() {
     return (
       <div className="search-books-bar">
-        <button className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</button>
+        <Link className="close-search" to="/dashboard">Close</Link>
         <input type="text" name="bookSearch" value={this.state.bookSearch} placeholder="Search by title or author" onChange={this.handleBookSearchChange} />
       </div>
     );
