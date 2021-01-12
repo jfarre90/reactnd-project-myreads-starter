@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import Book from './Book';
 import PropTypes from 'prop-types';
+import React from 'react';
+import Book from './Book';
 
 function SearchResults(props) {
     const { books, updateBookToShelf, emptyInput } = props;
